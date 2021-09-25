@@ -1,77 +1,110 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from uuid import UUID
 from datetime import datetime
-from typing import Optional, List
+from typing import List, Optional
+
+
+class ResponseSuccess(BaseModel):
+    id: str
+    msg: str
+    code: str
+
+    class Config:
+        arbitrary_types_allowed = True
+        schema_extra = {
+            "example": {
+                "msg": "Success",
+                "code": "S000",
+                "id": "506302",
+            }
+        }
 
 
 class VoteBase(BaseModel):
-    id: Optional[str]
-    post_id: Optional[int]
-    user_id: Optional[str]
-    title: Optional[str]
-    description: Optional[str]
-    end_at: Optional[datetime]
-    created_at: Optional[datetime]
-    created_at: Optional[datetime]
-    deleted_at: Optional[datetime]
-
-
-class VoteItemBase(BaseModel):
-    id: Optional[int]
-    vote_id: Optional[str]
-    name: Optional[str]
-    count: Optional[int]
-    created_at: Optional[datetime]
+    id: str
+    post_id: int
+    title: str
+    content: str
+    end_at: datetime
+    created_at: datetime
 
 
 class VoteItemUserBase(BaseModel):
-    id: Optional[int]
-    vote_item_id: Optional[str]
-    user_id: Optional[str]
-    created_at: Optional[datetime]
+    id: int
+    vote_item_id: str
+    user_id: str
 
 
-class VoteItemUserCreate(VoteItemUserBase):
-    vote_item_id: Optional[int]
-
-    class Config:
-        arbitrary_types_allowed = True
-        schema_extra = {
-            "example": {
-                "vote_item_id": 123456,
-            }
-        }
-
-
-class VoteItemCreate(VoteItemBase):
-    vote_id: Optional[str]
-    name: Optional[str]
+class VoteItemUser(VoteItemUserBase):
+    id: int
+    vote_item_id: int
+    user_id: str
 
     class Config:
-        arbitrary_types_allowed = True
-        schema_extra = {
-            "example": {
-                "vote_id": "501234",
-                "name": "Vote name",
-            }
-        }
+        orm_mode = True
 
 
-class VoteCreate(VoteBase):
-    post_id: Optional[int]
-    title: Optional[str]
-    description: Optional[str]
+class VoteItemBase(BaseModel):
+    id: int
+    vote_id: str
+    title: str
+    count: int
+
+
+class VoteItem(VoteItemBase):
+    id: int
+    vote_id: str
+    title: str
+    count: int
+    vote_item_users: List[VoteItemUser] = []
+
+    class Config:
+        orm_mode = True
+
+
+class Vote(VoteBase):
+    id: str
+    post_id: int
+    title: str
+    content: str
+    end_at: datetime
+    created_at: datetime
+    vote_items: List[VoteItem] = []
+
+    class Config:
+        orm_mode = True
+
+
+class RequestVote(BaseModel):
+    post_id: int
+    title: str
+    content: Optional[str]
     end_at: Optional[datetime]
-    vote_item: List[VoteItemCreate]
+    vote_items: Optional[List[str]]
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "post_id": 506302,
+                "title": "This is Vote Title",
+                "content": "This is Vote description....",
+                "end_at": "2021-09-25 04:37:02",
+                "vote_items": ["name1", "name2", "name3", "..."],
+            }
+        }
+
+
+class RequestVoteItem(BaseModel):
+    post_id: int
+    vote_id: str
+    vote_item_id: int
 
     class Config:
         arbitrary_types_allowed = True
         schema_extra = {
             "example": {
-                "post_id": 501284,
-                "title": "This is Vote Title",
-                "description": "This is Vote description....",
-                "end_at": "blogs/2021092012345678.png",
-                "vote_item": ["name1", "name2", "name3", "..."],
+                "post_id": 506302,
+                "vote_id": "iXrOQuIWMy",
+                "vote_item_id": 101234
             }
         }

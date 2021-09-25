@@ -1,45 +1,48 @@
 
 from typing import Any, List, Optional
-import time
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi import APIRouter,Depends, HTTPException, status, Header
 from sqlalchemy.orm import Session
-
-# from app.deps import get_db
-import schemas
+from db import get_db
+import schemas, time, crud
 
 router = APIRouter()
 
 
-@router.post("")
-def create_vote(*, x_user_id: Optional[str] = Header(None), payload: schemas.VoteCreate):
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=schemas.ResponseSuccess)
+def create_vote(*, db: Session = Depends(get_db), x_user_id: str = Header(None), payload: schemas.RequestVote):
     """
-    create vote.
+    create vote
     """
-    time.sleep(10)
-    print(payload, x_user_id)
+    # post check, user check 생략
+    return crud.create(db=db, payload=payload)
 
 
-@router.delete("/{post_id}/{vote_id}")
-def delete_vote(*, x_user_id: Optional[str] = Header(None), post_id: int, vote_id: str):
+@router.delete("/{post_id}/{vote_id}", status_code=status.HTTP_200_OK, response_model=schemas.ResponseSuccess)
+def delete_vote(*, db: Session = Depends(get_db), x_user_id: str = Header(None), post_id: int, vote_id: str):
     """
     delete vote
     """
+    # post check, user check 생략
+    return crud.delete(db=db, vote_id=vote_id, post_id=post_id)
 
-    print(post_id, vote_id, x_user_id)
 
-
-@router.get("/{post_id}/{vote_id}")
-def find_vote(*, x_user_id: Optional[str] = Header(None), post_id: int, vote_id: str):
+@router.get("/{post_id}/{vote_id}", response_model=schemas.Vote)
+def find_vote(*, db: Session = Depends(get_db), x_user_id: str = Header(None), post_id: int, vote_id: str):
     """
     get vote
     """
-    print(post_id, vote_id, x_user_id)
+    vote = crud.get(db=db, vote_id=vote_id, post_id=post_id)
+
+    if vote is None:
+        raise HTTPException(status_code=404, detail="삭제되었거나 존재하지 않는 투표 번호입니다.")
+
+    return vote
 
 
-@router.post("")
-def create_vote_item_user(*, x_user_id: Optional[str] = Header(None), payload: schemas.VoteItemUserCreate):
+@router.post("/items/users", status_code=status.HTTP_200_OK)
+def create_vote_item_user(*, db: Session = Depends(get_db), x_user_id: str = Header(None), payload: schemas.RequestVoteItem):
     """
     create vote item user
     """
-    time.sleep(10)
-    print(payload, x_user_id)
+    vote_item_user = crud.create_vote_user(db=db, user_id=x_user_id, payload=payload )
+    return vote_item_user

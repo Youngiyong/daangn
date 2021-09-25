@@ -1,14 +1,21 @@
 import os
+from typing import Generator
+import sqlalchemy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-from sqlalchemy import (
-    create_engine
-)
-
-from databases import Database
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# SQLAlchemy
-engine = create_engine(DATABASE_URL)
+engine = sqlalchemy.create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# databases query builder
-database = Database(DATABASE_URL)
+
+def get_db() -> Generator:
+    try:
+        db = SessionLocal()
+        yield db
+    finally:
+        db.close()
+
+
+
