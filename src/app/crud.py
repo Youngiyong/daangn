@@ -165,13 +165,15 @@ def create(db: Session, payload: RequestVote):
 
     now = datetime.now()
 
+    # 투표 종료시간 체크 없으면 + 1 day
+    if payload.end_at is None:
+        payload.end_at = now + timedelta(days=1)
+
     # 투표 종료시간이 현재시간보다 작은지 확인한다.
     if payload.end_at < now:
         raise HTTPException(status_code=400, detail="투표 종료시간을 다시 확인해주세요.")
 
-    # 투표 종료시간 체크 없으면 + 1 day
-    if payload.end_at is None:
-        payload.end_at = now + timedelta(days=1)
+
 
     try:
         # 투표 생성
