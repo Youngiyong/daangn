@@ -1,4 +1,9 @@
-# vote-api
+# daangn-vote-api
+
+##Swagger
+```bash
+http://localhost:8000/docs
+```
 
 ## Basic installation
 ```bash
@@ -8,8 +13,6 @@ python3.7, docker, docker-compose
 ## Run local docker-composer and share workspace with local filesystem
 ```bash
 docker-compose up
-# OR
-docker compose up
 ```
 
 ------------------------
@@ -24,7 +27,7 @@ docker build -t daangn/vote-api .
 ## Run local docker
 
 ```bash
-docker run -p 8000:8000 --name daangn --env-file .env.local daangn/vote-api
+docker run -p 8000:8000 --name daangn --env-file .env daangn/vote-api uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
 ```
 
 ## Run local runserver
