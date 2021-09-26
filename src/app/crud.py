@@ -180,7 +180,7 @@ def create(db: Session, payload: RequestVote):
         # 투표 항목 생성
         for item in payload.vote_items:
             vote_item = VoteItems(
-                vote_id=uuid,
+                vote_id=id,
                 title=item
             )
             db.add(vote_item)
