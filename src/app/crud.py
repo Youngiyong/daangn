@@ -55,13 +55,13 @@ def get(db: Session, vote_id: str, post_id: str, user_id: str):
 
     now = datetime.now()
     is_active = True
-    is_vote = False
+    is_vote = True
 
     if vote.end_at < now:
         is_active = False
 
     if vote_item_user:
-        is_vote = True
+        is_vote = False
 
     res = {
         "id": vote.id,

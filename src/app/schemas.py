@@ -29,7 +29,7 @@ class Vote(BaseModel):
     content: str
     end_at: datetime
     is_active: str = Field(description="투표 활성 여부")
-    is_vote: str = Field(description="사용자 투표 여부")
+    is_vote: str = Field(description="투표 가능 여부")
     vote_items: List[VoteItem] = []
     created_at: datetime
 
@@ -41,8 +41,8 @@ class Vote(BaseModel):
                 "title": "This is Vote Title",
                 "content": "This is Vote description....",
                 "end_at": "2021-09-25 04:37:02",
-                "is_vote" : True,
-                "is_active" : True,
+                "is_vote" : "True",
+                "is_active" : "True",
                 "vote_items": [
                     {
                         "id": 14,
