@@ -1,6 +1,6 @@
 # daangn-vote-api
 
-##Swagger
+## Swagger
 ```bash
 http://localhost:8000/docs
 ```
