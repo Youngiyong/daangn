@@ -4,7 +4,6 @@ from app.config import settings
 from app.router import router
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
-
 app.include_router(router, prefix=settings.API_V1_STR+"/votes", tags=['votes'])
 
 if __name__ == "__main__":

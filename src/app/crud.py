@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session, joinedload
 from fastapi import HTTPException
-from models import Votes, VoteItems, VoteItemUsers
-from schemas import RequestVote, RequestVoteItem
+from app.models import Votes, VoteItems, VoteItemUsers
+from app.schemas import RequestVote, RequestVoteItem
 from datetime import datetime, timedelta
-import util
+from app.util import uuid
+
 
 
 def put(db: Session, vote_id: str, post_id: str):
@@ -169,7 +170,7 @@ def create(db: Session, payload: RequestVote):
 
     try:
         # 투표 생성
-        uuid = util.uuid()
+        uuid = uuid()
         vote = Votes(
             id=uuid,
             post_id=payload.post_id,
