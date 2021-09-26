@@ -5,8 +5,6 @@ from app.schemas import RequestVote, RequestVoteItem
 from datetime import datetime, timedelta
 from app.util import uuid
 
-
-
 def put(db: Session, vote_id: str, post_id: str):
 
     # 투표 정보를 얻어온다.
@@ -170,9 +168,9 @@ def create(db: Session, payload: RequestVote):
 
     try:
         # 투표 생성
-        uuid = uuid()
+        id = uuid()
         vote = Votes(
-            id=uuid,
+            id=id,
             post_id=payload.post_id,
             title=payload.title,
             content=payload.content,
