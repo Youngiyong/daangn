@@ -57,6 +57,7 @@ class Vote(BaseModel):
                         "count": 0
                     }
                 ],
+                "created_at": "2021-09-25 04:37:02",
             }
         }
 
