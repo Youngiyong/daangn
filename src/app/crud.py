@@ -5,6 +5,7 @@ from app.schemas import RequestVote, RequestVoteItem
 from datetime import datetime, timedelta
 from app.util import uuid
 
+
 def put(db: Session, vote_id: str, post_id: str):
 
     # 투표 정보를 얻어온다.
@@ -54,13 +55,13 @@ def get(db: Session, vote_id: str, post_id: str, user_id: str):
 
     now = datetime.now()
     is_active = True
-    is_pick = False
+    is_vote = False
 
     if vote.end_at < now:
         is_active = False
 
     if vote_item_user:
-        is_pick = True
+        is_vote = True
 
     res = {
         "id": vote.id,
@@ -69,7 +70,7 @@ def get(db: Session, vote_id: str, post_id: str, user_id: str):
         "content": vote.content,
         "end_at": vote.end_at,
         "is_active": is_active,
-        "is_pick": is_pick,
+        "is_vote": is_vote,
         "vote_items": vote.vote_items,
         "created_at": vote.created_at
     }
@@ -162,9 +163,15 @@ def create(db: Session, payload: RequestVote):
     if payload.vote_items is None or len(payload.vote_items) < 2 or len(payload.vote_items) > 100:
         raise HTTPException(status_code=400, detail="투표 항목을 두개 이상 생성해주세요.")
 
+    now = datetime.now()
+
+    # 투표 종료시간이 현재시간보다 작은지 확인한다.
+    if payload.end_at < now:
+        raise HTTPException(status_code=400, detail="투표 종료시간을 다시 확인해주세요.")
+
     # 투표 종료시간 체크 없으면 + 1 day
     if payload.end_at is None:
-        payload.end_at = datetime.now() + timedelta(days=1)
+        payload.end_at = now + timedelta(days=1)
 
     try:
         # 투표 생성
