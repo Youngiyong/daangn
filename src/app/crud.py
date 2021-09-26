@@ -190,7 +190,7 @@ def create(db: Session, payload: RequestVote):
         res = {
             "msg": "Success",
             "code": "S000",
-            "id": uuid,
+            "id": id,
         }
 
     except:
